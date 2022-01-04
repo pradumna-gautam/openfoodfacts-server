@@ -163,7 +163,10 @@ checks: front_lint
 
 tests:
 	@echo "🥫 Runing tests …"
-	docker-compose run --rm backend prove -l
+# we need databases for integration tests
+	COMPOSE_PROJECT_NAME=test docker-compose up -d mongodb memcached postgres
+	COMPOSE_PROJECT_NAME=test docker-compose run --rm backend prove -l
+	COMPOSE_PROJECT_NAME=test docker-compose stop mongodb memcached postgres
 
 # check perl compiles, (pattern rule) / but only for newer files
 %.pm %.pl: _FORCE
